@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <link href="style/util.css" rel="stylesheet" type="text/css">
+    <link href="style/headers.css" rel="stylesheet" type="text/css">
+    <link href="style/drawer.css" rel="stylesheet" type="text/css">
+    <link href="style/confirm.css" rel="stylesheet" type="text/css">
+    <link href="style/theme.css" rel="stylesheet" type="text/css">
+    <link href="style/input_areas.css" rel="stylesheet" type="text/css">
+    <link href="style/action_menu.css" rel="stylesheet" type="text/css">
+
+
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1"/>
+    <title>Timetable</title>
+
+
+    <script src="event.js" defer></script>
+    <script src="polytech_fetch.js" defer></script>
+    <script src="polytech_event.js" defer></script>
+    <script src="calendar.js" defer></script>
+    <script src="polytech_calendar.js" defer></script>
+    <script src="ical.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+
+  <body role="application">
+    
+  
+    
+    
+    <!--
+      --  SIDEBAR
+      --
+    -->
+    <section data-type="sidebar">
+      <header>
+        <menu type="toolbar">
+          <a href="#content"><span class="icon icon-add">add</span></a>
+        </menu>
+        <h1>Emploi du temps</h1>
+      </header>
+      <nav id="sideNav">
+        <ul class="permanent">
+          <li><a id="sideAddGroup" href="#content">Ajouter un groupe</a></li>
+        </ul>
+      </nav>
+    </section>
+    
+    
+    <!--
+      --  MAIN SECTION
+      --
+    -->
+    
+   <section id="drawer" role="region">
+    <header>
+      <a href="#drawer"><span class="icon icon-menu">menu</span></a>
+      <menu type="toolbar">
+        <a href="#refresh" id="refresh" ><span class="icon icon-refresh">add</span></a>
+      </menu>
+      <h1>Emploi du temps</h1>
+    </header>
+      <div id="main" role="main">
+     
+    
+    <div class="planning">
+      <h1 class="day">
+        <a id="previousButton"><img src="style/img/back.png"/></a>
+        <span id="dayLabel"></span>
+        <a id="nextButton"><img src="style/img/back-rtl.png"/></a>
+      </h1>
+      <section class="current"></section>
+      <section class="current"></section>
+        </div>
+    </div>
+  </section>
+    
+     <!--
+      --  PLANNING LIST
+      --
+    -->
+   
+    <form id="planningList" role="dialog" data-type="action">
+      <header>Choose planning</header>
+      <menu>
+        
+       
+      </menu>
+    </form>
+    <!--
+      --  IDENTIFICATION FORM
+      --
+    -->
+    
+    <form id="identification" role="dialog" data-type="confirm">
+      <section>
+        <h1>Identification</h1><!-- this heading is optional -->
+        <p>Veuillez entrer vos identifiants s'il vous plait</p>
+        <table><tr><td><input type="text" placeholder ="login" id="login"/></td></tr>
+          <tr><td><input type="password" id="password" placeholder ="mot de passe"/></td></tr></table>
+           <input type="checkbox" id="remlogin" value="Remember credentials"/>Se souvenir de l'identifiant<br/>
+        <input type="checkbox" id="rempassword" value="Remember password"/>Se souvenir du mot de passe
+      </section>
+      <menu>
+        <button type = "button" id="idCancel">Cancel</button>
+        <button type = "button" id = "idConnect" class="recommend">Connect</button>
+      </menu>
+    </form>
+  
+ 
+    
+  </body>
+
+</html>
+
+
+
+
+

@@ -1,0 +1,115 @@
+section[role="region"] {
+    height : 100%;
+    
+}
+
+#planning {
+    height : calc(100% - 7rem);
+
+}
+
+.planning section {
+    overflow-y: scroll;
+    height : calc(100% - 10rem);
+    position: absolute;
+    width:100%;
+}
+
+
+#identification {
+    
+    display:none;
+}
+
+#planningList{
+    display:none;
+}
+
+.planning h1 {
+    margin:0;
+    
+    padding:5px;
+    border-bottom: solid 2px black;
+    background-color: #FFEECC;
+}
+
+.planning h1 #nextButton {
+    float:right;
+}
+
+.planning h1 #previousButton {
+    float:left;
+}
+
+.planning h1 {
+    text-align:center;
+}
+
+.event {
+    text-align: center;
+    padding:5px;
+    margin:5px;
+    border-radius:20px;
+    
+}
+
+.event h2 {
+    font-weight: bold;
+    font-size: 16pt;
+    
+    
+}
+
+.event p {
+    width:90%;
+    text-align: left;
+    margin:auto;
+    padding : 0;
+    
+}
+
+.event img {
+    width:25px;
+    
+}
+
+.currentToLeft {
+    
+    animation: currentToLeft 0.4s forwards;
+    display:none;
+}
+
+.rightToCurrent {
+    animation: rightToCurrent 0.4s forwards;
+    
+}
+.currentToRight {
+    
+    animation: currentToRight 0.4s forwards;
+}
+
+.leftToCurrent {
+    animation: leftToCurrent 0.4s forwards;
+    
+}
+
+
+/*------- Go Deeper -------*/
+
+@keyframes currentToLeft {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%);}
+}
+@keyframes rightToCurrent {
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(0); }
+}
+/*------- Go Back -------*/
+@keyframes leftToCurrent {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
+@keyframes currentToRight {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(100%); }
+}
