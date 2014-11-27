@@ -47,6 +47,23 @@ window.addEventListener("load", function() {
 		confirmClone.addEventListener("click", hideId);
 		confirmClone.addEventListener("click",onconfirm);
 	};
+	var hideConfirm = function() {
+		var confirmDialog = document.getElementById("confirmation");
+		confirmDialog.style.display = "none";
+	}
+	document.getElementById("confirmation").getElementsByClassName("cancel")[0].addEventListener("click",hideConfirm);
+	var displayConfirm = function(content, onconfirm) {
+		var confirmDialog = document.getElementById("confirmation");
+		confirmDialog.style.display = "block";
+		var confirmContent = confirmDialog.getElementsByTagName("section")[0];
+		confirmContent.textContent = content;
+		
+		var confirmButton = confirmDialog.getElementsByClassName("confirm")[0];
+		var confirmClone = confirmButton.cloneNode(true);
+		confirmButton.parentNode.replaceChild(confirmClone, confirmButton);
+		confirmClone.addEventListener("click", onconfirm);
+		confirmClone.addEventListener("click", hideConfirm);
+	}
 	
 	
 	/**
@@ -343,13 +360,22 @@ window.addEventListener("load", function() {
 		}
 		var li = document.createElement("li");
 		var a = document.createElement("a");
+		var trashImg = document.createElement("img");
+		trashImg.src = "style/img/trash.png";
 		a.textContent = group.name;
 		a.href ="#" + planning + "/" + group.url;
 		a.addEventListener("click", function() {
 			switchToCal(plannings[planning], group.url);
 		});
 		li.appendChild(a);
+		a.appendChild(trashImg);
 		ul.appendChild(li);
+		trashImg.addEventListener("click", function() {
+			displayConfirm("Voulez-vous retirer ce groupe de vos favoris ?", function() {
+				li.parentNode.removeChild(li);
+				
+			});
+		})
 		
 			
 	};

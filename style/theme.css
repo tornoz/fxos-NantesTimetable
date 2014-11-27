@@ -8,6 +8,13 @@ section[role="region"] {
 
 }
 
+#sideNav ul li a img {
+    width: 24px;
+float: right;
+margin-right: 10px;
+margin-top: -35px;
+}
+
 .planning section {
     overflow-y: scroll;
     height : calc(100% - 10rem);
@@ -16,7 +23,7 @@ section[role="region"] {
 }
 
 
-#identification {
+#identification, #confirmation {
     
     display:none;
 }
@@ -76,7 +83,7 @@ section[role="region"] {
 .currentToLeft {
     
     animation: currentToLeft 0.4s forwards;
-    display:none;
+    
 }
 
 .rightToCurrent {
@@ -98,7 +105,12 @@ section[role="region"] {
 
 @keyframes currentToLeft {
   0%   { transform: translateX(0); }
-  100% { transform: translateX(-100%);}
+  99% { 
+      transform: translateX(-100%);
+     width:100%;
+      opacity:0.5;
+  }
+    100% { width:0;}
 }
 @keyframes rightToCurrent {
   0%   { transform: translateX(100%); }
@@ -111,5 +123,5 @@ section[role="region"] {
 }
 @keyframes currentToRight {
   0%   { transform: translateX(0); }
-  100% { transform: translateX(100%); }
+  100% { transform: translateX(100%);opacity:0.5; }
 }

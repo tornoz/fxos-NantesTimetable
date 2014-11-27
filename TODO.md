@@ -4,15 +4,13 @@ TODO
 Before submitting to marketplace
 --------------------------------
 
- * Delete group button
+ * Delete group button 25%
  * return/cancel in planing/group list (when adding a group)
  * code cleanup
  * nice date display
- * exit drawer icon
  * localisation : english + french + breton
  * loading states when fetching data
  * fail states when failed connection/file read
- * modify icons
  * ?swipe? if simple
 
 Additionnal improvements

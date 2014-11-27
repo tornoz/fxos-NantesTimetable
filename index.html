@@ -33,10 +33,10 @@
       --  SIDEBAR
       --
     -->
-    <section data-type="sidebar">
+    <section data-type="sidebar" role="sidebar">
       <header>
         <menu type="toolbar">
-          <a href="#content"><span class="icon icon-add">add</span></a>
+          <a href="#content"><span class="icon icon-menu">add</span></a>
         </menu>
         <h1>Emploi du temps</h1>
       </header>
@@ -107,7 +107,21 @@
         <button type = "button" id = "idConnect" class="recommend">Connect</button>
       </menu>
     </form>
-  
+    
+     <!--
+      --  Confirmation screen
+      --
+    -->
+    
+   <form id="confirmation" role="dialog" data-type="confirm">
+      <section>
+        
+      </section>
+      <menu>
+        <button type = "button" class="cancel">Cancel</button>
+        <button type = "button" class="recommend confirm">Confirm</button>
+      </menu>
+    </form>
  
     
   </body>

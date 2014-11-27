@@ -181,7 +181,8 @@ section[role="region"] > header:first-child .icon-back-rtl {
   background-image: url(headers/images/icons/back-rtl.png);
 }
 
-section[role="region"] > header:first-child .icon-menu {
+section[role="region"] > header:first-child .icon-menu,
+section[role="sidebar"] > header:first-child .icon-menu{
   background-image: url(headers/images/icons/menu.png);
 }
 

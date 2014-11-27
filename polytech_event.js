@@ -42,6 +42,9 @@ var PolytechEvent = (function PolytechEventClosure(startDate, endDate, summary, 
 			case "Indisponibilité":
 				return "#A9FDE2";
 				break;
+			case "Examen":
+				return "#A8FFA8";
+				break;
 			default:
 				return "#FFFFCC";
 				
