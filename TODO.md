@@ -12,6 +12,7 @@ Before submitting to marketplace
  * localisation : english + french + breton
  * loading states when fetching data
  * fail states when failed connection/file read
+ * modify icons
  * ?swipe? if simple
 
 Additionnal improvements
