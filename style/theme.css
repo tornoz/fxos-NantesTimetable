@@ -22,6 +22,9 @@ margin-top: -35px;
     width:100%;
 }
 
+#listProgress{
+    display: none;
+}
 
 #identification, #confirmation {
     

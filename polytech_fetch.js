@@ -4,7 +4,8 @@ var MAX_TYPE_IDX = 4;
 var PolytechFetcher = (function PolytechFetcherClosure() {
 
     this.loginRequired = true;
-    this.onsuccess = function() {};
+    this.onsuccess = function() {console.err("should be overriden")};
+    this.onerror = function() {console.err("should be overriden")};
     this.data = {};
     this.typeComplete = 0;
     this.totalType =  MAX_TYPE_IDX;
@@ -28,7 +29,8 @@ var PolytechFetcher = (function PolytechFetcherClosure() {
     this.fetch = function polyfetch() {
         var baseUrl = "https://edt.univ-nantes.fr/chantrerie-gavy/";
         var index = "index1.html";
-
+        this.typeComplete = 0;
+        this.data = {};
         var xmlhttp=new XMLHttpRequest({mozSystem: true});
         console.log("querying " + baseUrl + index);
         var self = this;
@@ -84,6 +86,9 @@ var PolytechFetcher = (function PolytechFetcherClosure() {
                     
                 }
 
+            }
+            else if (xmlhttp.readyState==4){
+                self.onerror(xmlhttp.status);
             }
         }
         console.log("coucou");

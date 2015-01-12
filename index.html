@@ -9,12 +9,12 @@
     <link href="style/theme.css" rel="stylesheet" type="text/css">
     <link href="style/input_areas.css" rel="stylesheet" type="text/css">
     <link href="style/action_menu.css" rel="stylesheet" type="text/css">
-
+    <link href="style/progress_activity.css" rel="stylesheet" type="text/css">
 
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1"/>
-    <title>Timetable</title>
-
-
+    <title data-l10n-id="title">Emploi du temps</title>
+    <script src="l10n.js" defer></script>
+    <script src="hammer.min.js" defer></script>
     <script src="event.js" defer></script>
     <script src="polytech_fetch.js" defer></script>
     <script src="polytech_event.js" defer></script>
@@ -22,6 +22,9 @@
     <script src="polytech_calendar.js" defer></script>
     <script src="ical.js" defer></script>
     <script src="app.js" defer></script>
+    
+    <link rel="manifest" href="manifest.webapp" />
+    <link rel="localization"  href="locales/planning.{locale}.properties" />
   </head>
 
   <body role="application">
@@ -38,11 +41,11 @@
         <menu type="toolbar">
           <a href="#content"><span class="icon icon-menu">add</span></a>
         </menu>
-        <h1>Emploi du temps</h1>
+        <h1 data-l10n-id="title">Emploi du temps</h1>
       </header>
       <nav id="sideNav">
         <ul class="permanent">
-          <li><a id="sideAddGroup" href="#content">Ajouter un groupe</a></li>
+          <li><a data-l10n-id="addgroup" id="sideAddGroup" href="#content">Ajouter un groupe</a></li>
         </ul>
       </nav>
     </section>
@@ -59,7 +62,7 @@
       <menu type="toolbar">
         <a href="#refresh" id="refresh" ><span class="icon icon-refresh">add</span></a>
       </menu>
-      <h1>Emploi du temps</h1>
+      <h1 data-l10n-id="title">Emploi du temps</h1>
     </header>
       <div id="main" role="main">
      
@@ -70,7 +73,9 @@
         <span id="dayLabel"></span>
         <a id="nextButton"><img src="style/img/back-rtl.png"/></a>
       </h1>
-      <section class="current"></section>
+      <section class="current"><div data-l10n-id="init" style="font-size:16px;margin-top:16px;">Aucun groupe favori n'a été trouvé.
+      Afin de visualiser un emploi du temps, veuillez aller dans le menu
+        et séléctionner "Ajouter un groupe".</div></section>
       <section class="current"></section>
         </div>
     </div>
@@ -82,7 +87,7 @@
     -->
    
     <form id="planningList" role="dialog" data-type="action">
-      <header>Choose planning</header>
+      <header><span data-l10n-id="schoolChoice">Choix de l'école</span><progress id="listProgress"></progress></header>
       <menu>
         
        

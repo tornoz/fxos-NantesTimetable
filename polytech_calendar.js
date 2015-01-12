@@ -5,7 +5,7 @@ var PolytechCalendar = (function PolytechCalendarClosure(url) {
     this.url = url;
 	var self = this;
 	var sdcard = navigator.getDeviceStorage('sdcard');
-	this.selfEvents = [];
+	this.selfEvents = {};
 	this.base = Calendar;
 	this.base();
 	this.login = "";
@@ -109,23 +109,23 @@ var PolytechCalendar = (function PolytechCalendarClosure(url) {
   
 	var loadData = function(rawData) {
 		var jCalData = ICAL.parse(rawData);
-    	self.selfEvents = new ICAL.Component(jCalData);
-		
+    	var calData = new ICAL.Component(jCalData);
+		self.selfEvents = {};
+		var vevents = calData.getAllSubcomponents('vevent');
+    	for(var event in vevents) {
+      		var dstart = ICAL.Time.fromString(vevents[event].getFirstProperty("dtstart").jCal[3]).toJSDate()
+      		if(!self.selfEvents[dstart.toDateString()])
+				self.selfEvents[dstart.toDateString()] = [];
+			self.selfEvents[dstart.toDateString()].push(vevents[event])
+     	}
 	};
   	var openCalendar = function(calendarData, day, onsuccess) {
     	
-    	var finalEvents = [];
+		var finalEvents = calendarData[day.toDateString()];
     	var now = day;
     	// Fetch the VEVENT part
 		var time1 = Date.now();
-    	var vevents = calendarData.getAllSubcomponents('vevent');
-    	for(var event in vevents) {
-      		var dstart = ICAL.Time.fromString(vevents[event].getFirstProperty("dtstart").jCal[3]).toJSDate()
-      
-      		if(dstart.toDateString() == now.toDateString()) {
-        		finalEvents.push(vevents[event]);
-      		}
-     	}
+    	
 		var time2 = Date.now();
 		console.log("Time for parsing events : " + (time2 - time1));
 		var events = [];

@@ -1,5 +1,5 @@
 {
-  "name": "Univ Nantes Timetable",
+  "name": "Emploi du temps Univ Nantes",
   "description": "Browse your course planning fir the university of Nantes",
   "launch_path": "/index.html",
   "icons": {
@@ -9,5 +9,23 @@
     "128": "/icons/icon128x128.png"
   },
   "type": "privileged",
-    "permissions": { "systemXHR" : {},  "device-storage:sdcard":{ "access": "readwrite" }}
+    "permissions": { "systemXHR" : {},  "device-storage:sdcard":{ "access": "readwrite" }
+  },
+  
+  "locales": {
+     "en-US": {
+      "name" : "Univ Nantes Timetable",
+      "description" : "Timetable for the university of Nantes"
+     },
+      "br": {
+      "name" : "traductions",
+      "description" : "traductions"
+     },
+       "es": {
+         "name" : "Empleo del tiempo",
+         "description" : "Empleo del tiempo para Polytech"
+         
+       }
+  },
+  "default_locale": "fr"
 }

@@ -1,37 +1,53 @@
 window.addEventListener("load", function() {
+
+/***
+* Main application controllers
+* The file is divided in the following structure :
+*
+*  - variables initializations
+*  - function declaration
+*  - app initializations
+*  - setting listeners
+
+
+
+
+    
+/**
+***
+***     VARIABLES
+***
+**/
 	var polFetcher = new PolytechFetcher;
 	var plannings = {'Polytech':polFetcher};
   	
   
 	var curIdx = 0;
-  
+    
   	var refreshButton = document.getElementById("refresh");
   
   	var currentDay = new Date();
  	var nextButton = document.getElementById("nextButton");
 	var previousButton = document.getElementById("previousButton");
-	var calendar = {};
+        var calendar = {};
+        var idCheckBox = document.getElementById("remlogin");
+        var passwordCheckBox = document.getElementById("rempassword");
+        var side = true;
+        var planningMenu = document.getElementById("planningList").getElementsByTagName("menu")[0];
+        var cancelButton = document.getElementById("idCancel");
+    
+/**
+***
+***     FUNCTIONS
+***
+**/
+   
+
+
 	
-	/**
+        /**
 	*** CALENDAR INITIALISATION
 	**/
-	if(!localStorage.favGroups)
-		localStorage.favGroups = "{}";
-	
-	if(localStorage.login) {
-		document.getElementById("login").value = localStorage.login;
-		document.getElementById("login").disabled = true;
-		document.getElementById("remlogin").checked = true;
-		
-	}
-	if(localStorage.password) {
-		document.getElementById("password").value = localStorage.password;
-		document.getElementById("password").disabled = true;
-		document.getElementById("login").disabled = true;
-		document.getElementById("remlogin").checked = true;
-		document.getElementById("remlogin").disabled = true;
-		document.getElementById("rempassword").checked = true;
-	}
 	var hideId = function() {
 		var id = document.getElementById("identification");
 		id.style.display = "none";
@@ -51,18 +67,27 @@ window.addEventListener("load", function() {
 		var confirmDialog = document.getElementById("confirmation");
 		confirmDialog.style.display = "none";
 	}
-	document.getElementById("confirmation").getElementsByClassName("cancel")[0].addEventListener("click",hideConfirm);
-	var displayConfirm = function(content, onconfirm) {
+
+	var displayConfirm = function(content, isconfirm, onconfirm) {
 		var confirmDialog = document.getElementById("confirmation");
 		confirmDialog.style.display = "block";
 		var confirmContent = confirmDialog.getElementsByTagName("section")[0];
 		confirmContent.textContent = content;
-		
+
 		var confirmButton = confirmDialog.getElementsByClassName("confirm")[0];
+		
 		var confirmClone = confirmButton.cloneNode(true);
 		confirmButton.parentNode.replaceChild(confirmClone, confirmButton);
 		confirmClone.addEventListener("click", onconfirm);
 		confirmClone.addEventListener("click", hideConfirm);
+		
+		if(!isconfirm) {
+			confirmClone.style.display = "none";
+		}
+		else {
+			confirmClone.style.display = "inline";
+		}
+		
 	}
 	
 	
@@ -71,20 +96,26 @@ window.addEventListener("load", function() {
 	**/
 	var planningButton =function() {
 		var fetcher = plannings[this.textContent];
-		console.log("getting fetcher");
-		if(fetcher.loginRequired) {
-			
-		}
+		var login = "";
+		var password = "";
+		var progress = document.createElement("progress");
+		
 		var planningName = this.textContent;
 		
-		
-		displayLogin( function() {
+		/* Display login screen */
+		var onLogged = function() {
+			document.getElementById("listProgress").style.display = "inline";
 			var login = document.getElementById("login").value;
 			var password = document.getElementById("password").value;
-			fetcher.setLogin(login, password);
 			
+			fetcher.setLogin(login, password);
+			fetcher.onerror = function(code) {
+				displayConfirm("Error " + code + " while fetching list", false);
+				document.getElementById("listProgress").style.display = "none";
+			};
 			fetcher.onsuccess = function() {
-				console.log("SUCCESS");
+				
+				document.getElementById("listProgress").style.display = "none";
 				hideId();
 				emptyMenu();
 				for(var i in this.data) {
@@ -111,10 +142,8 @@ window.addEventListener("load", function() {
 									document.getElementById("planningList").style.display = "none";
 									var favGrp = {};
 									if(localStorage.favGroups != "") {
-										
 										var favGrp = JSON.parse(localStorage.favGroups);
 									}
-									
 									if(favGrp[planningName] == undefined) {
 										favGrp[planningName] = [];
 									}
@@ -135,9 +164,10 @@ window.addEventListener("load", function() {
 				addCancelButton();
 			};
 			fetcher.fetch();
-		});
-		
-		
+		};
+		if(fetcher.loginRequired) {
+		    displayLogin(onLogged);
+		}
 	};
 	
 	
@@ -148,7 +178,7 @@ window.addEventListener("load", function() {
 		}
 	};
 	
-	var planningMenu = document.getElementById("planningList").getElementsByTagName("menu")[0];
+	
 	var addGroup = function() {
 		document.getElementById("planningList").style.display = "block";
 		emptyMenu();
@@ -162,12 +192,15 @@ window.addEventListener("load", function() {
 		addCancelButton();
 	}
 	
-	document.getElementById("sideAddGroup").addEventListener("click", addGroup);
+	
 	
 	var addCancelButton=function() {
 		var cancel = document.createElement("button");
-		cancel.textContent = "Cancel";
+		cancel.textContent = "Annuler";
 		cancel.type="button";
+		cancel.addEventListener("click", function() {
+			planningMenu.parentElement.style.display = "none";
+		});
 		planningMenu.appendChild(cancel);
 	};
 	
@@ -191,7 +224,7 @@ window.addEventListener("load", function() {
 	/**
 	*** NEXT AND PREVIOUS BUTTON ACTION
 	**/
-	nextButton.addEventListener("click", function() {
+	var nextDay = function() {
 		//title.parentElement.removeChild(title);
 		/*while (planning.firstChild) {
           		planning.removeChild(planning.firstChild);
@@ -208,9 +241,10 @@ window.addEventListener("load", function() {
 		var time2 = Date.now();
 		console.log("Total time switching : " + (time2 - time1));
 
-	});
-	previousButton.addEventListener("click", function() {
-		/*while (planning.firstChild) {
+	};
+	
+	var previousDay = function() {
+	/*while (planning.firstChild) {
 				planning.removeChild(planning.firstChild);
 		  	}*/
 		side = false;
@@ -220,17 +254,17 @@ window.addEventListener("load", function() {
 			newdate.setDate(newdate.getDate() -1); 
 		currentDay = newdate;
 		calendar.getDay(newdate, displayEvents);
-	});
+	};
 		
   	
-  	var cancelButton = document.getElementById("idCancel");
-	cancelButton.addEventListener("click", hideId);
+  	
+	
   	/**
 	*** UI FUNCTIONS
 	**/
 	
 	
-	var side = true;
+	
 	var displayEvents = function(events) {
 		var planning = document.getElementsByClassName("planning")[0];
 		planning.removeChild(document.getElementsByClassName("current")[0]);
@@ -321,6 +355,7 @@ window.addEventListener("load", function() {
 		}
 
 	};
+    
 	var switchToCal = function(fetcher, url) {
 		calendar = fetcher.getCalendar(url);
 		var onLocal = function() {
@@ -341,6 +376,10 @@ window.addEventListener("load", function() {
 		calendar.isLocal(onLocal, notLocal);
 		
 	};
+	
+	var removeGroup = function(li) {
+		li.parentNode.removeChild(li);
+	}
 	
 	var addToSideFavGroups = function(planning, group) {
 		var sideNav = document.getElementById("sideNav");
@@ -370,8 +409,17 @@ window.addEventListener("load", function() {
 		li.appendChild(a);
 		a.appendChild(trashImg);
 		ul.appendChild(li);
-		trashImg.addEventListener("click", function() {
-			displayConfirm("Voulez-vous retirer ce groupe de vos favoris ?", function() {
+		trashImg.addEventListener("click", function(event) {
+			event.stopPropagation()
+			displayConfirm("Voulez-vous retirer ce groupe de vos favoris ?", true, function() {
+				var favGrp = JSON.parse(localStorage.favGroups);
+				console.log(favGrp);
+				favGrp[planning].forEach(function(el, idx) { if(el.url == group.url) {console.log("deleting " + idx );favGrp[planning].splice(idx,1);}});
+				if(favGrp[planning].length == 0 || favGrp[planning] == null) {
+					delete favGrp[planning];
+					ul.parentNode.removeChild(ul);
+				}
+				localStorage.favGroups = JSON.stringify(favGrp);
 				li.parentNode.removeChild(li);
 				
 			});
@@ -379,12 +427,15 @@ window.addEventListener("load", function() {
 		
 			
 	};
+	
+	
+	
 	var refresh = function() {
 		displayLogin(function() {
 			var login = document.getElementById("login").value;
 			var password = document.getElementById("password").value;
 			calendar.setLogin(login, password);
-				calendar.getEvents(function(){
+				calendar.refresh(login, password, function(){
 					calendar.getDay(new Date(), displayEvents);
 				});
 		});
@@ -401,31 +452,9 @@ window.addEventListener("load", function() {
 			
 		}
 	}
-	refreshSideFavGroups();
-	
-	refreshButton.addEventListener("click", refresh);
-	document.getElementById("idConnect").addEventListener("click", function(){
-		var login = document.getElementById("login").value;
-		var password = document.getElementById("password").value;
-		
-	});
-	if(localStorage.favGroups == "{}")
-		addGroup();
-	else {
-		var favGrp = JSON.parse(localStorage.favGroups);
-		var first = "";
-		for(first in favGrp) break;
-		var fetcher = plannings[first];
-		calendar = fetcher.getCalendar(favGrp[first][0].url);
-		console.log(calendar);
-		calendar.getEvents(function(){
-			calendar.getDay(new Date(), displayEvents);
-		});
-	}
 	
 	
-	var idCheckBox = document.getElementById("remlogin");
-	var passwordCheckBox = document.getElementById("rempassword");
+	
 	var remLogin = function() {
 		var login = document.getElementById("login");
 		console.log(this.checked);
@@ -459,7 +488,81 @@ window.addEventListener("load", function() {
 		}
 		
 	}
+
+/**
+***
+***     INITIALISATIONS
+***
+**/
+    
+    if(localStorage.favGroups == "{}" ||localStorage.favGroups == "" || localStorage.favGroups == undefined )
+		addGroup();
+	else {
+		var favGrp = JSON.parse(localStorage.favGroups);
+		var first = "";
+		for(first in favGrp) break;
+		var fetcher = plannings[first];
+		calendar = fetcher.getCalendar(favGrp[first][0].url);
+		console.log(calendar);
+		calendar.getEvents(function(){
+			calendar.getDay(new Date(), displayEvents);
+		});
+	}
+        if(!localStorage.favGroups)
+		localStorage.favGroups = "{}";
+	refreshSideFavGroups();
+	if(localStorage.login) {
+		document.getElementById("login").value = localStorage.login;
+		document.getElementById("login").disabled = true;
+		document.getElementById("remlogin").checked = true;
+		
+	}
+	if(localStorage.password) {
+		document.getElementById("password").value = localStorage.password;
+		document.getElementById("password").disabled = true;
+		document.getElementById("login").disabled = true;
+		document.getElementById("remlogin").checked = true;
+		document.getElementById("remlogin").disabled = true;
+		document.getElementById("rempassword").checked = true;
+	}
+
+    
+
+/**
+***
+***     EVENT LISTENERS
+***
+**/
 	
+	var hammertime = new Hammer(document.getElementsByClassName("planning")[0]);
+	hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+
+	hammertime.on('swipe', function(ev) {
+		console.log(ev);
+		if(ev.deltaX > 0) {
+			previousDay();
+		}
+		else {
+			
+			nextDay();
+		}
+		
+	});
+	
+	nextButton.addEventListener("click", nextDay);
+	previousButton.addEventListener("click", previousDay);
 	idCheckBox.addEventListener("click", remLogin);
-	passwordCheckBox.addEventListener("click", remPassword);
+        passwordCheckBox.addEventListener("click", remPassword);
+        document.getElementById("confirmation").getElementsByClassName("cancel")[0].addEventListener("click",hideConfirm);
+        refreshButton.addEventListener("click", refresh);
+	document.getElementById("idConnect").addEventListener("click", function(){
+		var login = document.getElementById("login").value;
+		var password = document.getElementById("password").value;
+	});
+        document.getElementById("sideAddGroup").addEventListener("click", addGroup);
+        cancelButton.addEventListener("click", hideId);
+
+
+
+    
 });
