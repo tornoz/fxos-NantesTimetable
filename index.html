@@ -11,9 +11,14 @@
     <link href="style/action_menu.css" rel="stylesheet" type="text/css">
     <link href="style/progress_activity.css" rel="stylesheet" type="text/css">
 
+    
+    
+   <link rel="resource" type="application/l10n" href="locales/locales.ini" />
+    
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1"/>
     <title data-l10n-id="title">Emploi du temps</title>
-    <script src="l10n.js" defer></script>
+    <script src="l10n.js" defer></script> 
+    <script defer src="/shared/js/l10n_date.js"></script>
     <script src="hammer.min.js" defer></script>
     <script src="event.js" defer></script>
     <script src="polytech_fetch.js" defer></script>
@@ -23,8 +28,8 @@
     <script src="ical.js" defer></script>
     <script src="app.js" defer></script>
     
-    <link rel="manifest" href="manifest.webapp" />
-    <link rel="localization"  href="locales/planning.{locale}.properties" />
+    <link rel="manifest" href="./manifest.webapp" />
+    
   </head>
 
   <body role="application">
@@ -100,16 +105,16 @@
     
     <form id="identification" role="dialog" data-type="confirm">
       <section>
-        <h1>Identification</h1><!-- this heading is optional -->
-        <p>Veuillez entrer vos identifiants s'il vous plait</p>
+        <h1 data-l10n-id="login">Identification</h1><!-- this heading is optional -->
+        <p data-l10n-id="loginMsg">Veuillez entrer vos identifiants s'il vous plait</p>
         <table><tr><td><input type="text" placeholder ="login" id="login"/></td></tr>
-          <tr><td><input type="password" id="password" placeholder ="mot de passe"/></td></tr></table>
-           <input type="checkbox" id="remlogin" value="Remember credentials"/>Se souvenir de l'identifiant<br/>
-        <input type="checkbox" id="rempassword" value="Remember password"/>Se souvenir du mot de passe
+          <tr><td><input type="password" id="password" placeholder ="password"/></td></tr></table>
+           <input type="checkbox" id="remlogin" value="Remember credentials"/><span data-l10n-id="loginRmb">Se souvenir de l'identifiant</span><br/>
+        <input type="checkbox" id="rempassword" value="Remember password"/><span data-l10n-id="passwordRmb">Se souvenir du mot de passe</span>
       </section>
       <menu>
-        <button type = "button" id="idCancel">Cancel</button>
-        <button type = "button" id = "idConnect" class="recommend">Connect</button>
+        <button data-l10n-id="cancel" type = "button" id="idCancel">Annuler</button>
+        <button data-l10n-id="connect" type = "button" id = "idConnect" class="recommend">Connexion</button>
       </menu>
     </form>
     
@@ -123,8 +128,8 @@
         
       </section>
       <menu>
-        <button type = "button" class="cancel">Cancel</button>
-        <button type = "button" class="recommend confirm">Confirm</button>
+        <button data-l10n-id="cancel" type = "button" class="cancel">Annuler</button>
+        <button data-l10n-id="confirm" type = "button" class="recommend confirm">Confirmer</button>
       </menu>
     </form>
  

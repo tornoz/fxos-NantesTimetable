@@ -26,6 +26,7 @@
          "description" : "Empleo del tiempo para Polytech"
          
        }
+    
   },
-  "default_locale": "fr"
+  "default_locale": "en-US"
 }

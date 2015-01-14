@@ -68,11 +68,11 @@ window.addEventListener("load", function() {
 		confirmDialog.style.display = "none";
 	}
 
-	var displayConfirm = function(content, isconfirm, onconfirm) {
+	var displayConfirm = function(l10n, isconfirm, onconfirm) {
 		var confirmDialog = document.getElementById("confirmation");
 		confirmDialog.style.display = "block";
 		var confirmContent = confirmDialog.getElementsByTagName("section")[0];
-		confirmContent.textContent = content;
+		confirmContent.setAttribute("data-l10n-id", l10n);
 
 		var confirmButton = confirmDialog.getElementsByClassName("confirm")[0];
 		
@@ -110,7 +110,7 @@ window.addEventListener("load", function() {
 			
 			fetcher.setLogin(login, password);
 			fetcher.onerror = function(code) {
-				displayConfirm("Error " + code + " while fetching list", false);
+				displayConfirm("errorList", false);
 				document.getElementById("listProgress").style.display = "none";
 			};
 			fetcher.onsuccess = function() {
@@ -272,7 +272,6 @@ window.addEventListener("load", function() {
 		var next = document.createElement("section");
 		next.className="current";
 
-		next.addEventListener("swipe", function(){console.log("SWIPE");});
 		document.getElementById("dayLabel").textContent = currentDay.toLocaleString().replace(currentDay.toLocaleTimeString(), "");
 		var previousEvent = undefined;
 		for(var i in events) {
@@ -411,7 +410,7 @@ window.addEventListener("load", function() {
 		ul.appendChild(li);
 		trashImg.addEventListener("click", function(event) {
 			event.stopPropagation()
-			displayConfirm("Voulez-vous retirer ce groupe de vos favoris ?", true, function() {
+			displayConfirm("deleteFav", true, function() {
 				var favGrp = JSON.parse(localStorage.favGroups);
 				console.log(favGrp);
 				favGrp[planning].forEach(function(el, idx) { if(el.url == group.url) {console.log("deleting " + idx );favGrp[planning].splice(idx,1);}});
@@ -535,7 +534,7 @@ window.addEventListener("load", function() {
 **/
 	
 	var hammertime = new Hammer(document.getElementsByClassName("planning")[0]);
-	hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+	hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL, velocity: 0.05});
 
 	hammertime.on('swipe', function(ev) {
 		console.log(ev);
