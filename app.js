@@ -271,8 +271,13 @@ window.addEventListener("load", function() {
 		var current = document.getElementsByClassName("current")[0];
 		var next = document.createElement("section");
 		next.className="current";
-
-		document.getElementById("dayLabel").textContent = currentDay.toLocaleString().replace(currentDay.toLocaleTimeString(), "");
+		navigator.mozL10n.language.code = "fr";
+		navigator.mozL10n.ready( function() {
+			var f = new navigator.mozL10n.DateTimeFormat();
+			var format = navigator.mozL10n.get('dateFormat');
+			var formatted = f.localeFormat(currentDay, format);
+			document.getElementById("dayLabel").textContent = formatted;//.replace(currentDay.toLocaleTimeString(), "");
+		});
 		var previousEvent = undefined;
 		for(var i in events) {
 
