@@ -1,6 +1,6 @@
 'use strict';
 
-var PolytechEvent = (function PolytechEventClosure(startDate, endDate, summary, description, location) {
+var NantesEvent = (function NantesEventClosure(startDate, endDate, summary, description, location) {
     this.base = Event;
 	var self = this;
 	//TRIGGER WARNING : very nasty string parsing
@@ -25,7 +25,7 @@ var PolytechEvent = (function PolytechEventClosure(startDate, endDate, summary, 
 	this.base(startDate, endDate,this.type, subject, group, teacher, location, notes);
 	
 	
-	PolytechEvent.prototype.getColor = function PolytechEvent_getColor() {
+	NantesEvent.prototype.getColor = function NantesEvent_getColor() {
 		switch(this.type) {
 			case "Projet":
 				return "#D3A8FF";
@@ -36,6 +36,7 @@ var PolytechEvent = (function PolytechEventClosure(startDate, endDate, summary, 
 			case "TP":
 				return "#FFFFA8";
 				break;
+			case "CM":
 			case "Cours magistral":
 				return "#FFA8A8";
 				break;
@@ -53,4 +54,4 @@ var PolytechEvent = (function PolytechEventClosure(startDate, endDate, summary, 
 	};
     
 });
-PolytechEvent.prototype = new Event;
+NantesEvent.prototype = new Event;

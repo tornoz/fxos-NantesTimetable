@@ -1,8 +1,9 @@
 'use strict';
 
-var PolytechCalendar = (function PolytechCalendarClosure(url) {
+var NantesCalendar = (function NantesCalendarClosure(school, url, fullurl) {
 	
     this.url = url;
+	this.fullurl = fullurl
 	var self = this;
 	var sdcard = navigator.getDeviceStorage('sdcard');
 	this.selfEvents = {};
@@ -10,16 +11,17 @@ var PolytechCalendar = (function PolytechCalendarClosure(url) {
 	this.base();
 	this.login = "";
 	this.password = "";
+    this.name = name;
+	this.school = school;
 	
-	PolytechCalendar.prototype.setLogin = function(login, password) {
+	NantesCalendar.prototype.setLogin = function(login, password) {
 		this.login = login;
 		this.password = password;
 	};
-	PolytechCalendar.prototype.isLocal = function PolytechCalendat_isLocal(ontrue, onfalse) {
-		var request = sdcard.get(".implijamzer/polytech/" + this.url);
+	NantesCalendar.prototype.isLocal = function NantesCalendar_isLocal(ontrue, onfalse) {
+		var request = sdcard.get(".implijamzer/" + this.school + "/" + this.url);
 		request.onsuccess = function () {
 			var file = this.result;
-			console.log(this.result);
 			if(file) {
 				ontrue();
 			}
@@ -32,12 +34,11 @@ var PolytechCalendar = (function PolytechCalendarClosure(url) {
 			onfalse();
 		}
 	}
-	PolytechCalendar.prototype.getEvents = function PolytechCalendar_getEvents(onsuccess) {
-		var request = sdcard.get(".implijamzer/polytech/" + this.url);
+	NantesCalendar.prototype.getEvents = function NantesCalendar_getEvents(onsuccess) {
+		var request = sdcard.get(".implijamzer/" + this.school + "/" + this.url);
 		var self = this;
 		request.onsuccess = function () {
 			var file = this.result;
-			console.log(this.result);
 			if(file) {
 				var fr = new FileReader();
 				fr.onload =function(result) {
@@ -52,7 +53,7 @@ var PolytechCalendar = (function PolytechCalendarClosure(url) {
 		}
 
 		request.onerror = function () {
-			console.warn("Unable to get the file: " + ".implijamzer/polytech/" + self.url);
+			console.warn("Unable to get the file: " + ".implijamzer/" + self.school + "/" + self.url);
 			console.warn(this.error);
 			self.refresh(self.login, self.password, onsuccess);
 		}
@@ -60,24 +61,23 @@ var PolytechCalendar = (function PolytechCalendarClosure(url) {
 	}
 	
 	
-	PolytechCalendar.prototype.refresh = function PolytechCalendar_refresh(login, password, onsuccess) {
+	NantesCalendar.prototype.refresh = function NantesCalendar_refresh(login, password, onsuccess) {
 		
 		var xmlhttp=new XMLHttpRequest({mozSystem: true});
     	
 		var fileName = this.url;
+		var schoolname = this.school;
     	xmlhttp.onreadystatechange=function() {
-      		console.log("sayé : " + xmlhttp.status);
 			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
 				var file   = new Blob([xmlhttp.responseText], {type: "text/plain"});
 
-				var delRequest = sdcard.delete(".implijamzer/polytech/" + fileName);
+				var delRequest = sdcard.delete(".implijamzer/" + schoolname + "/" + fileName);
 
 				delRequest.onsuccess = function() {
-					var request = sdcard.addNamed(file, ".implijamzer/polytech/" + fileName);
+					var request = sdcard.addNamed(file, ".implijamzer/" + schoolname + "/" + fileName);
 
 					request.onsuccess = function () {
 						var name = this.result;
-						console.log('File "' + name + '" successfully wrote on the sdcard storage area');
 						
 					}
 
@@ -92,13 +92,12 @@ var PolytechCalendar = (function PolytechCalendarClosure(url) {
                 
             }
     	}
-    	console.log("coucou");
-    	xmlhttp.open("GET","https://edt.univ-nantes.fr/chantrerie-gavy/" + url,true, login, password);
+    	xmlhttp.open("GET",fullurl,true, login, password);
     	xmlhttp.send();
   
 	};
 	
-	PolytechCalendar.prototype.getDay = function PolytechCalendar_getDay(date, onsuccess) {
+	NantesCalendar.prototype.getDay = function NantesCalendar_getDay(date, onsuccess) {
 		
 		openCalendar(self.selfEvents, date, onsuccess);
 		
@@ -124,12 +123,7 @@ var PolytechCalendar = (function PolytechCalendarClosure(url) {
 		var finalEvents = calendarData[day.toDateString()];
     	var now = day;
     	// Fetch the VEVENT part
-		var time1 = Date.now();
-    	
-		var time2 = Date.now();
-		console.log("Time for parsing events : " + (time2 - time1));
 		var events = [];
-		var time3 = Date.now();
 		for(var i in finalEvents) {
 			var dtstart = ICAL.Time.fromString(finalEvents[i].getFirstProperty("dtstart").jCal[3]).toJSDate()
 			var dtend = ICAL.Time.fromString(finalEvents[i].getFirstProperty("dtend").jCal[3]).toJSDate()
@@ -137,16 +131,14 @@ var PolytechCalendar = (function PolytechCalendarClosure(url) {
 			var description = finalEvents[i].getFirstProperty("description").jCal[3];
 			var location = finalEvents[i].getFirstProperty("location").jCal[3];
 			
-			var event = new PolytechEvent(dtstart, dtend, summary, description, location);
+			var event = new NantesEvent(dtstart, dtend, summary, description, location);
 			
 			events.push(event);
 		}
-		var time4 = Date.now();
-		console.log("Time for cerating events : " + (time4 - time3));
 		onsuccess(events);
     
     
   }
     
 });
-PolytechCalendar.prototype = new Calendar;
+NantesCalendar.prototype = new Calendar;

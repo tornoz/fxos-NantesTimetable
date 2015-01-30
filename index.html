@@ -18,16 +18,20 @@
     
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1"/>
     <title data-l10n-id="title">Emploi du temps</title>
-    <script src="l10n.js" defer></script> 
-    <script defer src="l10n_date.js"></script>
-    <script src="hammer.min.js" defer></script>
-    <script src="event.js" defer></script>
-    <script src="polytech_fetch.js" defer></script>
-    <script src="polytech_event.js" defer></script>
-    <script src="calendar.js" defer></script>
-    <script src="polytech_calendar.js" defer></script>
-    <script src="ical.js" defer></script>
-    <script src="app.js" defer></script>
+    
+    <!-- LIBRARY LOADING -->
+    <script src="js/lib/l10n.js" defer></script> 
+    <script src="js/lib/l10n_date.js" defer ></script>
+    <script src="js/lib/hammer.min.js" defer></script>
+    <script src="js/lib/ical.js" defer></script>
+    
+    <script src="js/schooldata.js" defer></script>
+    <script src="js/event.js" defer></script>
+    <script src="js/nantes_fetch.js" defer></script>
+    <script src="js/nantes_event.js" defer></script>
+    <script src="js/calendar.js" defer></script>
+    <script src="js/nantes_calendar.js" defer></script>
+    <script src="js/app.js" defer></script>
     
     <link rel="manifest" href="./manifest.webapp" />
     
@@ -93,7 +97,11 @@
     -->
    
     <form id="planningList" role="dialog" data-type="action">
-      <header><span data-l10n-id="schoolChoice">Choix de l'école</span><progress id="listProgress"></progress></header>
+      <header><span data-l10n-id="schoolChoice">Choix de l'école</span><progress id="listProgress"></progress>
+      <div>
+        <input id="planningSearch" type="search" placeholder="Search" class="slim"/><button style="top:4.2rem" id = "planningSearchReset"type="reset">Clear</button>
+        </div>
+      </header>
       <menu>
         
        

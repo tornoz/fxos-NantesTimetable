@@ -26,6 +26,14 @@ margin-top: -35px;
     display: none;
 }
 
+#planningList header {
+    padding:0;
+}
+
+#planningList .slim {
+    margin-top:-10px;
+}
+
 #identification, #confirmation {
     
     display:none;

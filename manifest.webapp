@@ -1,6 +1,6 @@
 {
   "name": "Emploi du temps Univ Nantes",
-  "description": "Browse your course planning fir the university of Nantes",
+  "description": "Timetable for the university of Nantes",
   "launch_path": "/index.html",
   "icons": {
     "16": "/icons/icon16x16.png",

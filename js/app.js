@@ -18,9 +18,9 @@ window.addEventListener("load", function() {
 ***     VARIABLES
 ***
 **/
-	var polFetcher = new PolytechFetcher;
-	var plannings = {'Polytech':polFetcher};
-  	
+	
+	var univ = loadSchoolData()["univ-nantes"];
+  	var fetcher = new NantesFetcher(univ.baseurl);
   
 	var curIdx = 0;
     
@@ -42,7 +42,24 @@ window.addEventListener("load", function() {
 ***
 **/
    
+	var getSchool = function(schoolname) {
+		for(i in univ.schools) {
+			if(univ.schools[i].name === schoolname) {
+				return univ.schools[i];
+			}
+		}
+		return null;
+	};
+	/*
+	function compare(a,b) {
+  if (a.last_nom < b.last_nom)
+     return -1;
+  if (a.last_nom > b.last_nom)
+    return 1;
+  return 0;
+}
 
+objs.sort(compare);*/
 
 	
         /**
@@ -95,20 +112,27 @@ window.addEventListener("load", function() {
 	*** PLANNING LIST INIT
 	**/
 	var planningButton =function() {
-		var fetcher = plannings[this.textContent];
+		
 		var login = "";
 		var password = "";
 		var progress = document.createElement("progress");
-		
+		var school = getSchool(this.textContent);
+		var univurl = fetcher.baseurl;
+	
 		var planningName = this.textContent;
 		
 		/* Display login screen */
 		var onLogged = function() {
 			document.getElementById("listProgress").style.display = "inline";
-			var login = document.getElementById("login").value;
-			var password = document.getElementById("password").value;
+			if(school.auth) {
+				var login = document.getElementById("login").value;
+				var password = document.getElementById("password").value;
+				fetcher.setLogin(login, password);
+			}
+			else {
+				fetcher.setLogin("", "");
+			}
 			
-			fetcher.setLogin(login, password);
 			fetcher.onerror = function(code) {
 				displayConfirm("errorList", false);
 				document.getElementById("listProgress").style.display = "none";
@@ -124,6 +148,7 @@ window.addEventListener("load", function() {
 					elem.type="button";
 					elem.value=i;
 					elem.addEventListener("click", function() {
+						
 						emptyMenu();
 						for(var j in fetcher.data[this.value].groups) {
 							var elem = document.createElement("button");
@@ -133,9 +158,12 @@ window.addEventListener("load", function() {
 							elem.addEventListener("click", function() {
 								var groupUrl = this.value;
 								var groupName = this.textContent;
-								calendar = fetcher.getCalendar(this.value);
-								if(fetcher.loginRequired) {
+								calendar = fetcher.getCalendar(school.name,school.url,this.value, school.baseurl);
+								if(school.auth) {
 									calendar.setLogin(login, password);
+								}
+								else {
+									calendar.setLogin("","");
 								}
 								calendar.getEvents(function(){
 									calendar.getDay(new Date(), displayEvents);
@@ -163,10 +191,13 @@ window.addEventListener("load", function() {
 				}
 				addCancelButton();
 			};
-			fetcher.fetch();
+			fetcher.fetch(school.url, school.baseurl);
 		};
-		if(fetcher.loginRequired) {
+		if(school.auth) {
 		    displayLogin(onLogged);
+		}
+		else {
+			onLogged();
 		}
 	};
 	
@@ -180,11 +211,20 @@ window.addEventListener("load", function() {
 	
 	
 	var addGroup = function() {
+		document.getElementById("planningSearch").value = "";
 		document.getElementById("planningList").style.display = "block";
 		emptyMenu();
-		for(var i in plannings) {
+		for(var i in univ.schools) {
 			var elem = document.createElement("button");
-			elem.textContent = i;
+			if(univ.schools[i].auth == true) {
+				var img = document.createElement("img");
+				img.src = "style/img/lock.png";
+				img.width = 16;
+				elem.appendChild(img);
+			}
+			
+			elem.appendChild(document.createTextNode(univ.schools[i].name));
+			elem.name = i;
 			elem.type="button";
 			elem.addEventListener("click", planningButton);
 			planningMenu.appendChild(elem);
@@ -229,7 +269,6 @@ window.addEventListener("load", function() {
 		/*while (planning.firstChild) {
           		planning.removeChild(planning.firstChild);
       		}*/
-		var time1 = Date.now();
 		side = true;
 		var newdate = new Date(currentDay);
 		newdate.setDate(newdate.getDate() +1);
@@ -238,8 +277,6 @@ window.addEventListener("load", function() {
 		currentDay = newdate;
 
 		calendar.getDay(newdate, displayEvents);
-		var time2 = Date.now();
-		console.log("Total time switching : " + (time2 - time1));
 
 	};
 	
@@ -360,8 +397,8 @@ window.addEventListener("load", function() {
 
 	};
     
-	var switchToCal = function(fetcher, url) {
-		calendar = fetcher.getCalendar(url);
+	var switchToCal = function(school, url) {
+		calendar = fetcher.getCalendar(school.name,school.url,url, school.baseurl);
 		var onLocal = function() {
 			calendar.getEvents(function(){
 				calendar.getDay(new Date(), displayEvents);
@@ -408,7 +445,7 @@ window.addEventListener("load", function() {
 		a.textContent = group.name;
 		a.href ="#" + planning + "/" + group.url;
 		a.addEventListener("click", function() {
-			switchToCal(plannings[planning], group.url);
+			switchToCal(getSchool(planning), group.url);
 		});
 		li.appendChild(a);
 		a.appendChild(trashImg);
@@ -417,14 +454,14 @@ window.addEventListener("load", function() {
 			event.stopPropagation()
 			displayConfirm("deleteFav", true, function() {
 				var favGrp = JSON.parse(localStorage.favGroups);
-				console.log(favGrp);
-				favGrp[planning].forEach(function(el, idx) { if(el.url == group.url) {console.log("deleting " + idx );favGrp[planning].splice(idx,1);}});
+				favGrp[planning].forEach(function(el, idx) { if(el.url == group.url) {favGrp[planning].splice(idx,1);}});
 				if(favGrp[planning].length == 0 || favGrp[planning] == null) {
 					delete favGrp[planning];
 					ul.parentNode.removeChild(ul);
 				}
 				localStorage.favGroups = JSON.stringify(favGrp);
 				li.parentNode.removeChild(li);
+				titleNode.parentNode.removeChild(titleNode);
 				
 			});
 		})
@@ -440,7 +477,7 @@ window.addEventListener("load", function() {
 			var password = document.getElementById("password").value;
 			calendar.setLogin(login, password);
 				calendar.refresh(login, password, function(){
-					calendar.getDay(new Date(), displayEvents);
+					calendar.getDay(currentDay, displayEvents);
 				});
 		});
 	};
@@ -461,7 +498,6 @@ window.addEventListener("load", function() {
 	
 	var remLogin = function() {
 		var login = document.getElementById("login");
-		console.log(this.checked);
 		if(this.checked) {
 			login.disabled = true;
 			localStorage.login = login.value;
@@ -475,7 +511,6 @@ window.addEventListener("load", function() {
 	var remPassword = function() {
 		var login = document.getElementById("login");
 		var password = document.getElementById("password");
-		console.log(this.checked);
 		if(this.checked) {
 			login.disabled = true;
 			password.disabled = true;
@@ -492,6 +527,20 @@ window.addEventListener("load", function() {
 		}
 		
 	}
+	
+	var planningSearch = function() {
+		for(var i = 0; i < planningMenu.childNodes.length-1;i++) {
+			var node = planningMenu.childNodes[i];
+			if(node.textContent.toUpperCase().contains(this.value.toUpperCase()) && node.style.display == "none") {
+				node.style.display = "";
+			}		
+			else if(!node.textContent.toUpperCase().contains(this.value.toUpperCase()) && node.style.display == "") {
+				node.style.display = "none";
+				
+			}
+			
+		}	
+	}
 
 /**
 ***
@@ -505,9 +554,8 @@ window.addEventListener("load", function() {
 		var favGrp = JSON.parse(localStorage.favGroups);
 		var first = "";
 		for(first in favGrp) break;
-		var fetcher = plannings[first];
-		calendar = fetcher.getCalendar(favGrp[first][0].url);
-		console.log(calendar);
+		calendar = fetcher.getCalendar(first, getSchool(first).url,favGrp[first][0].url);
+	
 		calendar.getEvents(function(){
 			calendar.getDay(new Date(), displayEvents);
 		});
@@ -542,7 +590,7 @@ window.addEventListener("load", function() {
 	hammertime.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL, velocity: 0.05});
 
 	hammertime.on('swipe', function(ev) {
-		console.log(ev);
+	
 		if(ev.deltaX > 0) {
 			previousDay();
 		}
@@ -565,8 +613,14 @@ window.addEventListener("load", function() {
 	});
         document.getElementById("sideAddGroup").addEventListener("click", addGroup);
         cancelButton.addEventListener("click", hideId);
-
-
+	document.getElementById("planningSearch").addEventListener("input", planningSearch);
+	document.getElementById("planningSearchReset").addEventListener("focus", function() {
+		this.previousElementSibling.value = "";
+		for(var i = 0; i < planningMenu.childNodes.length-1;i++) {
+			planningMenu.childNodes[i].style.display = "";
+			
+		}	
+	});
 
     
 });

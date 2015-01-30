@@ -68,7 +68,8 @@ form p {
 }
 
 form p input + button[type="reset"],
-form p textarea + button[type="reset"] {
+form p textarea + button[type="reset"],
+#planningSearch + button[type="reset"]{
   position: absolute;
   top: 0;
   right: -0.3rem;
@@ -103,7 +104,8 @@ form p input:focus {
 }
 
 form p input:focus + button[type="reset"],
-form p textarea:focus + button[type="reset"] {
+form p textarea:focus + button[type="reset"],
+#planningSearch:focus + button[type="reset"]{
   opacity: 1;
   pointer-events: all;
 }

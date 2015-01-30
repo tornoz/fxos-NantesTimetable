@@ -38,7 +38,7 @@
   left: 0;
   right: 0;
   z-index: 10;
-  height: 5rem;
+  height: 8rem;
   line-height: 4.9rem;
   color: #fff;
   white-space: nowrap;
@@ -188,7 +188,7 @@
 [role="dialog"][data-type="action"] > section {
   color: #fff;
   position: absolute;
-  top: 7rem;
+  top: 7rem;//7
   left: 1.5rem;
   right: 1.5rem;
   bottom: 2rem;
@@ -200,9 +200,9 @@
 [role="dialog"][data-type="action"] > menu {
   margin: 0;
   padding: 0;
-  max-height: calc(100% - 13.5rem); /*header(5rem) + footer(7rem) + padding(1.5rem)*/
+  max-height: calc(100% - 18.5rem); /*header(10rem) + footer(7rem) + padding(1.5rem)*/
   height: auto;
-  padding-top: 1.5rem;
+  padding-top: 2.5rem;
   overflow: auto;
   width: auto;
   border: none;
